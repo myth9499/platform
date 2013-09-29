@@ -1,5 +1,36 @@
 /** the shm struct of the platform **/
 
+/* the flow struct
+ * author:LiLei
+ */
+
+typedef struct FLOW
+{
+	int	flowid;//流程序号
+	char	flow_mark[60];//流程说明
+	char	func_name[20];//流程函数名称
+	char	dl_name[10];//动态库名称
+	char	flow_type[2];//流程类型
+	char	errflow[60];//出错流程
+	char	timeoutflow[60];//超时流程
+}_flow;
+
+typedef struct FLOWINDEX
+{
+	char	flow_name[60];//流程名称
+	_flow	*detail_flow;
+}_flowindex;
+
+
+/*the data struct
+ * author:LiLei
+ */
+typedef struct DATA
+{
+	char	varname[10];
+	char	value[100];
+}_data;
+
 /*the main tran shm struct 
  * author:LiLei
  */
@@ -9,16 +40,35 @@ typedef struct TRANSHM
 	pthread_t s_pid;//发起渠道线程号
 	pthread_t a_pid;//核心处理线程号
 	pthread_t r_pid;//接收渠道线程号
-	int 	chnlid;//核心发送到渠道的渠道ID
-	char	type[2];//所需服务类型,给各个交易分服务处理
-	char	s_data[9];//发起日期
-	char	s_time[9];//发起时间
-	char	e_data[9];//结束日期
-	char	e_time[9];//结束时间
-	char	in_data[1024];//内部控制数据
-	char	tran_data[4096];//实际交易数据
-	char	end_data[4096];//核心处理后需要发送到渠道的数据
-	char	storetype[2];//存储类型 F-文件名 B-字节存储
-	char	stat[2];//交易状态  W-待处理 A-处理中 E-处理结束 T-超时
-	char	sync[2];//sync stat Y-sync  N-NO SYNC
+	char	send_chnl[5];//发起渠道标志
+	char	serv_name[5];//核心服务名称
+	char	recv_chnl[5];//接收渠道标志
+	char	chnl_data[4096];//渠道申请数据
+	char	senv_data[4096];//核心申请数据
+	_flow 	*do_flow;		//当前处理流程指针
+	_data	*do_data;		//当前变量值数据区
+	char	return_serv[4096];//返回核心数据
+	char	return_chnl[4096];//返回渠道数据
+	time_t	stime;//开始时间
+	time_t	dtime;//处理时间
+	time_t	etime;//结束时间
+	char	cur_stat[2];//当前状态
+	char	require_serv[3];//所需服务类型
+	char	xxx1[1];//备用1
+	char	xxx2[1];//备用1
+	char	xxx3[1];//备用1
+	char	xxx4[1];//备用1
 }_transhm;
+
+/* the server shm index struct
+ * author:LiLei
+ */
+
+typedef struct SERVERSHM
+{
+	pid_t	serverpid;//目前提供服务的PID
+	char	servtype[2];//C 渠道 S 核心服务
+	char	require_serv[3];//提供服务的服务类型
+	char	chnlid[5];//渠道标志
+	int		cnt;//处理能力 为0 时,不对外提供服务
+}_servershm;

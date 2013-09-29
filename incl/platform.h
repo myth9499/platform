@@ -5,8 +5,11 @@
 #include<string.h>
 #include<unistd.h>
 #include<time.h>
+#include<signal.h>
+#include<assert.h>
 #include<pthread.h>
 #include<errno.h>
+#include<signal.h>
 #include<sys/ipc.h>
 #include<sys/shm.h>
 #include<sys/types.h>
@@ -14,7 +17,6 @@
 #include<sys/socket.h>
 #include<netinet/in.h>
 #include <fcntl.h>
-#include <sqlite3.h>
 #include <bits/pthreadtypes.h>
 
 /** system define errno **/
